@@ -13,6 +13,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.integrate as solv
 
+# Parameters characterising the LV model
 r=.2
 a=.1
 b=.3
@@ -22,15 +23,15 @@ N=1000
 time=np.linspace(0,Tf,N)
 
 def f(t,X):
+    """system of ODE - LV model """
     x,y=X
     xdot=r*x - a*y*x
     ydot=b*y*x - m*y 
     return xdot,ydot
 
+
 def print_IC(x0,y0):
     """ prints the input inital conditions in frame1"""
-    
-    
     solve_sys(float(x0), float(y0))
     IC_label = tkinter.Label(frame1, text = f'Initial X :{float(x0)}, Initial Y : {float(y0)} ',bg='cyan')
     plot_button = tkinter.Button(frame1,text='Plot',command =lambda : plot_image())
@@ -41,6 +42,7 @@ def print_IC(x0,y0):
     
 
 def plot_image():
+    """ plots the image of phase portrait in frame2 when plot button is clicked"""
     #global value
     for widgets in frame2.winfo_children():
         widgets.destroy()
@@ -51,6 +53,7 @@ def plot_image():
     img_label.pack()    
 
 def solve_sys(x0,y0):
+    """Solves the LV system, plots the phase portrait and saves the image in same directory """
     z = solv.solve_ivp(f,t_span=[0,Tf],y0=np.array([x0,y0]),t_eval=time)
     X,Y = z.y[0],z.y[1]
     plt.ioff()
@@ -58,11 +61,14 @@ def solve_sys(x0,y0):
     plt.savefig('frame2_fig.png')
     plt.close()
 
+    
+# Defining Root window 
 root = tkinter.Tk()
 root.title('Phase plot generator')
 root.geometry('800x800')
 root.resizable(1,1)
 
+# Defining frames 1 and 2 (input and ouput)
 frame1 = tkinter.LabelFrame(root,bg = 'cyan',text='Intial conditions for LV system',borderwidth = 10,width=800,height=200)
 frame2 = tkinter.LabelFrame(root,text = 'Phase plots',width=800,height=600)
 
